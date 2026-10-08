@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wander — Payment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="form-page">
+<nav class="nav dark-nav"><a class="brand" href="index.html"><span>W</span> WANDER</a><div class="navlinks"><a href="index.html">Home</a><a href="tour.html">Itinerary</a></div></nav>
+<div class="payment-wrap">
+  <div class="payment-head">
+    <div class="section-tag">05 — PAYMENT</div>
+    <h1>Secure your<br><em>spot.</em></h1>
+    <p>Choose your preferred payment method. This is a frontend demo, so no real payment will be charged.</p>
+  </div>
+  <div class="payment-card">
+    <div class="order">
+      <div><span>TRIP</span><strong>COX'S BAZAR ESCAPE</strong></div>
+      <div><span>DATES</span><strong>18–20 DEC 2026</strong></div>
+      <div><span>AMOUNT</span><strong id="amount">৳ 3,990</strong></div>
+    </div>
+    <div class="method-title">Choose payment method</div>
+    <div class="methods">
+      <button type="button" class="method active" data-method="card"><b>▣</b><span><strong>Card</strong><small>Visa / Mastercard</small></span><i>✓</i></button>
+      <button type="button" class="method" data-method="bkash"><b>◉</b><span><strong>bKash</strong><small>Mobile payment</small></span><i>✓</i></button>
+      <button type="button" class="method" data-method="nagad"><b>◆</b><span><strong>Nagad</strong><small>Mobile payment</small></span><i>✓</i></button>
+    </div>
+
+    <div id="cardBox" class="payment-fields">
+      <label>Card number<input placeholder="1234 5678 9012 3456" inputmode="numeric"></label>
+      <div class="two"><label>Expiry date<input placeholder="MM / YY"></label><label>CVV<input placeholder="•••" type="password"></label></div>
+      <label>Cardholder name<input id="payer" placeholder="Name on card"></label>
+    </div>
+
+    <div id="mobileBox" class="payment-fields hidden">
+      <div class="mobile-note"><strong id="mobileTitle">bKash payment</strong><p>In a real integration, this button would open the official payment gateway. For this demo, continue to the confirmation screen.</p></div>
+      <label>Mobile number<input placeholder="01XXXXXXXXX" inputmode="numeric"></label>
+    </div>
+
+    <button id="payBtn" class="btn btn-dark submit">Pay ৳3,990 <span>↗</span></button>
+    <p class="demo-note">DEMO MODE · NO REAL PAYMENT IS PROCESSED</p>
+  </div>
+</div>
+<footer><span>© 2026 WANDER CLUB</span><span>SECURE CHECKOUT · DEMO</span></footer>
+<script>
+const data=JSON.parse(sessionStorage.getItem('wanderDemo')||'{}');
+const seats=parseInt((data.seats||'1').charAt(0))||1;
+const total=3990*seats;
+document.getElementById('amount').textContent='৳ '+total.toLocaleString();
+document.getElementById('payBtn').innerHTML='Pay ৳'+total.toLocaleString()+' <span>↗</span>';
+const methods=document.querySelectorAll('.method');
+const cardBox=document.getElementById('cardBox'), mobileBox=document.getElementById('mobileBox');
+let selected='card';
+methods.forEach(btn=>btn.addEventListener('click',()=>{
+  methods.forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+  selected=btn.dataset.method;
+  cardBox.classList.toggle('hidden',selected!=='card');
+  mobileBox.classList.toggle('hidden',selected==='card');
+  document.getElementById('mobileTitle').textContent=selected==='bkash'?'bKash payment':'Nagad payment';
+}));
+document.getElementById('payBtn').addEventListener('click',()=>{
+  sessionStorage.setItem('wanderPayment',JSON.stringify({method:selected,total}));
+  location.href='success.html';
+});
+</script>
+</body></html>
