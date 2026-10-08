@@ -1,429 +1,505 @@
-// ==========================================
-// TOUR REGISTRATION WEBSITE - script.js
-// Frontend Demo Only - No Backend Required
-// ==========================================
+/* =========================================================
+   WANDER TOUR — COMPLETE FRONTEND JAVASCRIPT
+   Demo only — No real database or payment processing
+   ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
 
-    // -------------------------------
-    // Mobile Navigation
-    // -------------------------------
-    const menuBtn = document.querySelector(".menu-btn");
-    const nav = document.querySelector(".nav-links");
+/* =========================================================
+   GLOBAL HELPERS
+   ========================================================= */
 
-    if (menuBtn && nav) {
-        menuBtn.addEventListener("click", () => {
-            nav.classList.toggle("active");
-        });
+function getRegistrationData() {
+    try {
+        return JSON.parse(
+            sessionStorage.getItem("wanderDemo") || "{}"
+        );
+    } catch (error) {
+        console.error("Could not read registration data:", error);
+        return {};
     }
+}
 
-    // -------------------------------
-    // Smooth Scroll
-    // -------------------------------
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener("click", function (e) {
-            const targetId = this.getAttribute("href");
 
-            if (targetId && targetId !== "#") {
-                const target = document.querySelector(targetId);
+function savePaymentData(data) {
+    sessionStorage.setItem(
+        "wanderPayment",
+        JSON.stringify(data)
+    );
+}
 
-                if (target) {
-                    e.preventDefault();
 
-                    target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                    });
-                }
-            }
+function getPaymentData() {
+    try {
+        return JSON.parse(
+            sessionStorage.getItem("wanderPayment") || "{}"
+        );
+    } catch (error) {
+        console.error("Could not read payment data:", error);
+        return {};
+    }
+}
 
-            // Close mobile menu
-            if (nav) {
-                nav.classList.remove("active");
-            }
-        });
-    });
 
-    // -------------------------------
-    // Registration Form
-    // -------------------------------
-    const registrationForm = document.querySelector("#registrationForm");
+function generateReference() {
+    const number = Math.floor(
+        1000 + Math.random() * 9000
+    );
 
-    if (registrationForm) {
-        registrationForm.addEventListener("submit", function (e) {
-            e.preventDefault();
+    return "WND-" + number;
+}
 
-            const name = document.querySelector("#name")?.value.trim();
-            const phone = document.querySelector("#phone")?.value.trim();
-            const email = document.querySelector("#email")?.value.trim();
-            const participants =
-                document.querySelector("#participants")?.value;
-            const packageType =
-                document.querySelector("#package")?.value;
 
-            // Basic validation
-            if (!name || !phone || !email || !participants || !packageType) {
-                showMessage(
-                    "Please fill in all required fields.",
-                    "error"
-                );
+/* =========================================================
+   REGISTRATION PAGE
+   registration.html
+   ========================================================= */
+
+const registrationForm =
+    document.getElementById("registerForm");
+
+
+if (registrationForm) {
+
+    registrationForm.addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+            const formData =
+                new FormData(registrationForm);
+
+            const data =
+                Object.fromEntries(formData.entries());
+
+
+            /* -----------------------------------------
+               Basic validation
+               ----------------------------------------- */
+
+            const name =
+                data.name?.trim();
+
+            const phone =
+                data.phone?.trim();
+
+
+            if (!name) {
+                alert("Please enter your full name.");
                 return;
             }
 
-            // Bangladesh phone validation
-            const phonePattern = /^(?:\+8801|01)[3-9]\d{8}$/;
 
-            if (!phonePattern.test(phone)) {
-                showMessage(
-                    "Please enter a valid Bangladesh mobile number.",
-                    "error"
-                );
+            if (!phone) {
+                alert("Please enter your phone number.");
                 return;
             }
 
-            // Generate demo registration ID
-            const registrationId =
-                "TR-" +
-                Math.floor(100000 + Math.random() * 900000);
 
-            // Show success message
-            showMessage(
-                `Registration successful! Your Registration ID is ${registrationId}.`,
-                "success"
+            /* -----------------------------------------
+               Save registration temporarily
+               ----------------------------------------- */
+
+            sessionStorage.setItem(
+                "wanderDemo",
+                JSON.stringify(data)
             );
 
-            // Optional demo data display
-            console.log("Registration Details:", {
-                registrationId: registrationId,
-                name: name,
-                phone: phone,
-                email: email,
-                participants: participants,
-                package: packageType
-            });
 
-            // Reset form
-            registrationForm.reset();
-        });
+            /* -----------------------------------------
+               Redirect to payment
+               ----------------------------------------- */
+
+            window.location.href =
+                "payment.html";
+        }
+    );
+}
+
+
+/* =========================================================
+   PAYMENT PAGE
+   payment.html
+   ========================================================= */
+
+const paymentButton =
+    document.getElementById("payBtn");
+
+const paymentMethods =
+    document.querySelectorAll(".method");
+
+const cardBox =
+    document.getElementById("cardBox");
+
+const mobileBox =
+    document.getElementById("mobileBox");
+
+const mobileTitle =
+    document.getElementById("mobileTitle");
+
+const amountElement =
+    document.getElementById("amount");
+
+
+if (paymentButton) {
+
+    const registration =
+        getRegistrationData();
+
+
+    /* -----------------------------------------
+       Calculate number of seats
+       ----------------------------------------- */
+
+    let seats = 1;
+
+    if (registration.seats) {
+
+        const parsedSeats =
+            parseInt(
+                String(registration.seats).charAt(0),
+                10
+            );
+
+        if (!isNaN(parsedSeats)) {
+            seats = parsedSeats;
+        }
     }
 
-    // -------------------------------
-    // Demo Registration Button
-    // -------------------------------
-    const registerButtons =
-        document.querySelectorAll(".register-btn");
 
-    registerButtons.forEach(button => {
-        button.addEventListener("click", () => {
+    /* -----------------------------------------
+       Tour price
+       ----------------------------------------- */
 
-            const formSection =
-                document.querySelector("#registration");
+    const pricePerPerson = 3990;
 
-            if (formSection) {
-                formSection.scrollIntoView({
-                    behavior: "smooth"
-                });
-            }
-        });
-    });
+    const totalAmount =
+        pricePerPerson * seats;
 
-    // -------------------------------
-    // Copy Registration Details
-    // -------------------------------
-    const copyButtons =
-        document.querySelectorAll("[data-copy]");
 
-    copyButtons.forEach(button => {
+    /* -----------------------------------------
+       Display amount
+       ----------------------------------------- */
 
-        button.addEventListener("click", async () => {
+    if (amountElement) {
 
-            const text = button.getAttribute("data-copy");
-
-            if (!text) return;
-
-            try {
-                await navigator.clipboard.writeText(text);
-
-                const originalText = button.innerText;
-
-                button.innerText = "Copied!";
-
-                setTimeout(() => {
-                    button.innerText = originalText;
-                }, 1500);
-
-            } catch (error) {
-                console.error("Copy failed:", error);
-            }
-        });
-
-    });
-
-    // -------------------------------
-    // Tour Package Selection
-    // -------------------------------
-    const packageCards =
-        document.querySelectorAll(".package-card");
-
-    packageCards.forEach(card => {
-
-        card.addEventListener("click", () => {
-
-            const packageName =
-                card.dataset.package;
-
-            const packageInput =
-                document.querySelector("#package");
-
-            if (packageInput && packageName) {
-                packageInput.value = packageName;
-            }
-
-            // Remove previous selection
-            packageCards.forEach(item => {
-                item.classList.remove("selected");
-            });
-
-            // Select current card
-            card.classList.add("selected");
-
-            // Scroll to registration
-            const registration =
-                document.querySelector("#registration");
-
-            if (registration) {
-                registration.scrollIntoView({
-                    behavior: "smooth"
-                });
-            }
-        });
-
-    });
-
-    // -------------------------------
-    // FAQ Accordion
-    // -------------------------------
-    const faqItems =
-        document.querySelectorAll(".faq-item");
-
-    faqItems.forEach(item => {
-
-        const question =
-            item.querySelector(".faq-question");
-
-        if (!question) return;
-
-        question.addEventListener("click", () => {
-
-            const isActive =
-                item.classList.contains("active");
-
-            // Close all
-            faqItems.forEach(faq => {
-                faq.classList.remove("active");
-            });
-
-            // Open clicked one
-            if (!isActive) {
-                item.classList.add("active");
-            }
-        });
-
-    });
-
-    // -------------------------------
-    // Date Display
-    // -------------------------------
-    const dateElements =
-        document.querySelectorAll("[data-current-date]");
-
-    dateElements.forEach(element => {
-
-        const today = new Date();
-
-        element.textContent =
-            today.toLocaleDateString("en-BD", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric"
-            });
-
-    });
-
-    // -------------------------------
-    // Scroll Header Effect
-    // -------------------------------
-    const header =
-        document.querySelector("header");
-
-    if (header) {
-
-        window.addEventListener("scroll", () => {
-
-            if (window.scrollY > 50) {
-                header.classList.add("scrolled");
-            } else {
-                header.classList.remove("scrolled");
-            }
-
-        });
-
+        amountElement.textContent =
+            "৳ " + totalAmount.toLocaleString();
     }
 
-    // -------------------------------
-    // Reveal Animation
-    // -------------------------------
-    const revealElements =
-        document.querySelectorAll(".reveal");
 
-    if ("IntersectionObserver" in window) {
+    /* -----------------------------------------
+       Update payment button
+       ----------------------------------------- */
 
-        const observer =
-            new IntersectionObserver(
-                (entries) => {
+    paymentButton.innerHTML =
+        "Pay ৳" +
+        totalAmount.toLocaleString() +
+        ' <span>↗</span>';
 
-                    entries.forEach(entry => {
 
-                        if (entry.isIntersecting) {
+    /* -----------------------------------------
+       Current payment method
+       ----------------------------------------- */
 
-                            entry.target.classList.add("visible");
+    let selectedMethod = "card";
 
-                            observer.unobserve(
-                                entry.target
-                            );
+
+    /* -----------------------------------------
+       Payment method selection
+       ----------------------------------------- */
+
+    paymentMethods.forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                /* Remove active state */
+                paymentMethods.forEach(function (item) {
+                    item.classList.remove("active");
+                });
+
+
+                /* Activate clicked method */
+                button.classList.add("active");
+
+
+                /* Save selected method */
+                selectedMethod =
+                    button.dataset.method;
+
+
+                /* ---------------------------------
+                   Card
+                   --------------------------------- */
+
+                if (selectedMethod === "card") {
+
+                    if (cardBox) {
+                        cardBox.classList.remove("hidden");
+                    }
+
+                    if (mobileBox) {
+                        mobileBox.classList.add("hidden");
+                    }
+                }
+
+
+                /* ---------------------------------
+                   bKash
+                   --------------------------------- */
+
+                else if (selectedMethod === "bkash") {
+
+                    if (cardBox) {
+                        cardBox.classList.add("hidden");
+                    }
+
+                    if (mobileBox) {
+                        mobileBox.classList.remove("hidden");
+                    }
+
+                    if (mobileTitle) {
+                        mobileTitle.textContent =
+                            "bKash payment";
+                    }
+                }
+
+
+                /* ---------------------------------
+                   Nagad
+                   --------------------------------- */
+
+                else if (selectedMethod === "nagad") {
+
+                    if (cardBox) {
+                        cardBox.classList.add("hidden");
+                    }
+
+                    if (mobileBox) {
+                        mobileBox.classList.remove("hidden");
+                    }
+
+                    if (mobileTitle) {
+                        mobileTitle.textContent =
+                            "Nagad payment";
+                    }
+                }
+            }
+        );
+    });
+
+
+    /* -----------------------------------------
+       Payment button
+       ----------------------------------------- */
+
+    paymentButton.addEventListener(
+        "click",
+        function () {
+
+            /* -------------------------------
+               Card validation
+               ------------------------------- */
+
+            if (selectedMethod === "card") {
+
+                const cardInputs =
+                    cardBox?.querySelectorAll("input");
+
+
+                if (cardInputs) {
+
+                    let emptyField = false;
+
+                    cardInputs.forEach(function (input) {
+
+                        if (!input.value.trim()) {
+                            emptyField = true;
                         }
-
                     });
 
-                },
-                {
-                    threshold: 0.15
+
+                    if (emptyField) {
+
+                        alert(
+                            "Please complete your card details."
+                        );
+
+                        return;
+                    }
                 }
-            );
+            }
 
-        revealElements.forEach(element => {
-            observer.observe(element);
-        });
 
-    } else {
+            /* -------------------------------
+               Mobile payment validation
+               ------------------------------- */
 
-        // Fallback
-        revealElements.forEach(element => {
-            element.classList.add("visible");
-        });
+            if (
+                selectedMethod === "bkash" ||
+                selectedMethod === "nagad"
+            ) {
 
+                const mobileInput =
+                    mobileBox?.querySelector("input");
+
+
+                if (
+                    mobileInput &&
+                    !mobileInput.value.trim()
+                ) {
+
+                    alert(
+                        "Please enter your mobile number."
+                    );
+
+                    return;
+                }
+            }
+
+
+            /* --------------------------------
+               Save demo payment information
+               -------------------------------- */
+
+            const paymentData = {
+
+                method: selectedMethod,
+
+                amount: totalAmount,
+
+                currency: "BDT",
+
+                status: "paid",
+
+                reference: generateReference(),
+
+                timestamp:
+                    new Date().toISOString()
+            };
+
+
+            savePaymentData(paymentData);
+
+
+            /* --------------------------------
+               Redirect to success page
+               -------------------------------- */
+
+            window.location.href =
+                "success.html";
+        }
+    );
+}
+
+
+/* =========================================================
+   SUCCESS PAGE
+   success.html
+   ========================================================= */
+
+const guestNameElement =
+    document.getElementById("guestName");
+
+const referenceElement =
+    document.getElementById("ref");
+
+
+if (guestNameElement || referenceElement) {
+
+    const registration =
+        getRegistrationData();
+
+    const payment =
+        getPaymentData();
+
+
+    /* -----------------------------------------
+       Guest name
+       ----------------------------------------- */
+
+    if (guestNameElement) {
+
+        const name =
+            registration.name?.trim();
+
+        guestNameElement.textContent =
+            name || "traveller";
     }
 
+
+    /* -----------------------------------------
+       Payment reference
+       ----------------------------------------- */
+
+    if (referenceElement) {
+
+        const reference =
+            payment.reference ||
+            generateReference();
+
+        referenceElement.textContent =
+            reference;
+    }
+}
+
+
+/* =========================================================
+   OPTIONAL: SMOOTH ANCHOR NAVIGATION
+   ========================================================= */
+
+document.querySelectorAll(
+    'a[href^="#"]'
+).forEach(function (link) {
+
+    link.addEventListener(
+        "click",
+        function (event) {
+
+            const targetId =
+                link.getAttribute("href");
+
+            if (
+                !targetId ||
+                targetId === "#"
+            ) {
+                return;
+            }
+
+
+            const target =
+                document.querySelector(targetId);
+
+
+            if (target) {
+
+                event.preventDefault();
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }
+    );
 });
 
 
-// ==========================================
-// MESSAGE FUNCTION
-// ==========================================
+/* =========================================================
+   DEMO CONSOLE MESSAGE
+   ========================================================= */
 
-function showMessage(message, type = "success") {
+console.log(
+    "%cWANDER TOUR DEMO",
+    "font-size:18px;font-weight:bold;"
+);
 
-    // Remove existing message
-    const oldMessage =
-        document.querySelector(".form-message");
+console.log(
+    "Frontend demo loaded successfully."
+);
 
-    if (oldMessage) {
-        oldMessage.remove();
-    }
-
-    const messageBox =
-        document.createElement("div");
-
-    messageBox.className =
-        `form-message ${type}`;
-
-    messageBox.textContent = message;
-
-    const form =
-        document.querySelector("#registrationForm");
-
-    if (form) {
-        form.prepend(messageBox);
-    }
-
-    // Automatically remove
-    setTimeout(() => {
-
-        if (messageBox) {
-            messageBox.remove();
-        }
-
-    }, 5000);
-}
-
-
-// ==========================================
-// DEMO REGISTRATION DATA
-// ==========================================
-
-function generateRegistrationID() {
-
-    return (
-        "TR-" +
-        Math.floor(
-            100000 +
-            Math.random() * 900000
-        )
-    );
-
-}
-
-
-// ==========================================
-// PRINT REGISTRATION COPY
-// ==========================================
-
-function printRegistrationCopy() {
-
-    window.print();
-
-}
-
-
-// ==========================================
-// DOWNLOAD / SAVE DEMO COPY
-// ==========================================
-
-function downloadRegistrationCopy() {
-
-    const copy =
-        document.querySelector(".registration-copy");
-
-    if (!copy) {
-        alert("Registration copy not found.");
-        return;
-    }
-
-    const text =
-        copy.innerText;
-
-    const blob =
-        new Blob([text], {
-            type: "text/plain"
-        });
-
-    const url =
-        URL.createObjectURL(blob);
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-        "tour-registration-copy.txt";
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-
-}
+console.log(
+    "No real payment or database is connected."
+);
