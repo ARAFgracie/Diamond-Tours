@@ -16,9 +16,5 @@
   <p class="small">For the real version, this screen can connect to a database, payment gateway and confirmation email.</p>
   <a href="index.html" class="btn btn-dark">Back to home <span>↗</span></a>
 </div>
-<script>
-const data=JSON.parse(sessionStorage.getItem('wanderDemo')||'{}');
-document.getElementById('guestName').textContent=data.name||'traveller';
-document.getElementById('ref').textContent='WND-'+Math.floor(1000+Math.random()*9000);
-</script>
+<script src="script.js"></script>
 </body></html>

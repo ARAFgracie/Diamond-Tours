@@ -44,25 +44,5 @@
   </div>
 </div>
 <footer><span>© 2026 WANDER CLUB</span><span>SECURE CHECKOUT · DEMO</span></footer>
-<script>
-const data=JSON.parse(sessionStorage.getItem('wanderDemo')||'{}');
-const seats=parseInt((data.seats||'1').charAt(0))||1;
-const total=3990*seats;
-document.getElementById('amount').textContent='৳ '+total.toLocaleString();
-document.getElementById('payBtn').innerHTML='Pay ৳'+total.toLocaleString()+' <span>↗</span>';
-const methods=document.querySelectorAll('.method');
-const cardBox=document.getElementById('cardBox'), mobileBox=document.getElementById('mobileBox');
-let selected='card';
-methods.forEach(btn=>btn.addEventListener('click',()=>{
-  methods.forEach(x=>x.classList.remove('active'));btn.classList.add('active');
-  selected=btn.dataset.method;
-  cardBox.classList.toggle('hidden',selected!=='card');
-  mobileBox.classList.toggle('hidden',selected==='card');
-  document.getElementById('mobileTitle').textContent=selected==='bkash'?'bKash payment':'Nagad payment';
-}));
-document.getElementById('payBtn').addEventListener('click',()=>{
-  sessionStorage.setItem('wanderPayment',JSON.stringify({method:selected,total}));
-  location.href='success.html';
-});
-</script>
+<script src="script.js"></script>
 </body></html>
