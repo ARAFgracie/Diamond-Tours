@@ -5,3 +5,54 @@
 /* refined hero + payment */
 .hero-content{max-width:900px;padding-bottom:10vh}.hero h1{font-size:clamp(52px,7.2vw,96px);letter-spacing:-.045em;line-height:.88;margin:18px 0 24px}.hero p{max-width:590px;font-size:16px;line-height:1.65}.eyebrow{letter-spacing:.2em}.hero-actions{margin-top:28px}.intro h2,.experience h2,.final-cta h2,.included h2{letter-spacing:-.035em}.section-tag{letter-spacing:.2em}.payment-wrap{max-width:1050px;margin:auto;padding:80px 6vw 100px;display:grid;grid-template-columns:.8fr 1.2fr;gap:90px}.payment-head h1{font:600 clamp(60px,7vw,88px)/.88 "Playfair Display";letter-spacing:-.04em;margin:20px 0}.payment-head p{color:#66675f;line-height:1.7;max-width:390px}.payment-card{background:#ebe7dc;padding:32px;border:1px solid var(--line)}.order{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding-bottom:25px;border-bottom:1px solid var(--line)}.order span{font-size:9px;letter-spacing:.15em;color:#888}.order strong{display:block;font-size:12px;margin-top:7px}.method-title{font-size:13px;font-weight:700;margin:30px 0 12px}.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.method{position:relative;text-align:left;border:1px solid var(--line);background:#f8f6ef;padding:15px;border-radius:5px;cursor:pointer;font-family:inherit}.method.active{border:2px solid var(--ink);padding:14px}.method>b{font-size:18px;display:block;margin-bottom:15px}.method span{display:block}.method strong,.method small{display:block}.method strong{font-size:12px}.method small{font-size:9px;color:#888;margin-top:4px}.method i{display:none;position:absolute;right:10px;top:10px;font-style:normal;font-size:10px}.method.active i{display:block}.payment-fields{margin-top:25px}.mobile-note{background:#f8f6ef;padding:17px;margin-bottom:20px}.mobile-note strong{font-size:13px}.mobile-note p{font-size:11px;line-height:1.6;color:#777;margin:6px 0 0}.hidden{display:none!important}
 @media(max-width:760px){.hero-content{padding-bottom:9vh}.hero h1{font-size:55px;letter-spacing:-.04em}.hero p{font-size:14px}.payment-wrap{grid-template-columns:1fr;gap:35px;padding:55px 7vw}.payment-head h1{font-size:62px}.order{grid-template-columns:1fr 1fr}.order div:last-child{grid-column:1/-1}.methods{grid-template-columns:1fr}.method{display:flex;align-items:center;gap:13px}.method>b{margin:0}.method i{top:50%;transform:translateY(-50%)}}
+
+/* ===== DIAMOND TOURS HERO ===== */
+.dt-hero{--gold:#9a7344;--img-a:url("https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80");--img-b:url("https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=900&q=80");position:relative;overflow:hidden;color:#fff;background:#1a1612}
+.dt-track{position:absolute;top:0;bottom:0;left:0;display:flex;width:max-content;will-change:transform}
+.dt-pic{flex:0 0 clamp(210px,27vw,400px);height:100%;background-color:#2b231b;background-size:cover;background-position:center}
+.dt-pic.p1{background-image:var(--img-a)}
+.dt-pic.p2{background-image:var(--img-b)}
+.dt-pic.p3{background-image:var(--img-a);background-size:230%;background-position:15% 30%}
+.dt-pic.p4{background-image:var(--img-b);background-size:230%;background-position:85% 60%}
+.dt-pic.p5{background-image:var(--img-a);background-size:200%;background-position:85% 75%}
+.dt-pic.p6{background-image:var(--img-b);background-size:200%;background-position:10% 35%}
+.dt-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55),rgba(10,8,6,.45) 55%,rgba(10,8,6,.7))}
+.dt-wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 20px}
+.dt-top{display:flex;justify-content:space-between;align-items:center;height:56px;font-size:12px}
+.dt-contact{display:flex;gap:26px}
+.dt-contact a{opacity:.9}
+.dt-social{display:flex;gap:18px}
+.dt-social svg{width:17px;height:17px;fill:currentColor;display:block}
+.dt-nav{display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1d1a16;padding:0 28px;height:108px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.dt-brand{display:flex;align-items:center;gap:12px;color:var(--gold)}
+.dt-brand svg{width:44px;height:44px;flex:none}
+.dt-brand span{display:flex;flex-direction:column;line-height:1}
+.dt-brand b{font:600 25px "Playfair Display",serif;letter-spacing:.07em}
+.dt-brand small{font-size:10px;letter-spacing:.34em;font-weight:700;margin-top:5px;padding-left:2px}
+.dt-links{display:flex;align-items:center;gap:36px;font-size:13px;letter-spacing:.02em;text-transform:uppercase}
+.dt-links a:hover{color:var(--gold)}
+.dt-links .dt-book{background:var(--gold);color:#fff;padding:20px 40px;font-size:11px;font-weight:700;letter-spacing:.1em}
+.dt-links .dt-book:hover{color:#fff;background:#82602f}
+.dt-call{display:flex;justify-content:center;align-items:center;gap:22px;padding:34px 0 38px}
+.dt-247{display:flex;align-items:center;gap:2px}
+.dt-247 svg{width:34px;height:34px}
+.dt-247 small{font-size:10px;margin-top:-16px;margin-left:-6px}
+.dt-phone{font:500 25px "Playfair Display",serif;letter-spacing:.05em}
+.dt-res{border:1px solid rgba(255,255,255,.85);padding:20px 44px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;transition:.25s}
+.dt-res:hover{background:#fff;color:#1d1a16}
+.dt-tiles{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.25);background:rgba(10,8,6,.18)}
+.dt-tiles a{display:flex;align-items:center;justify-content:center;gap:16px;padding:40px 10px;font:500 26px "Playfair Display",serif;letter-spacing:.02em;border-left:1px solid rgba(255,255,255,.25);transition:.25s}
+.dt-tiles a:first-child{border-left:0}
+.dt-tiles a:hover{background:rgba(154,115,68,.55)}
+.dt-tiles svg{width:38px;height:38px;flex:none}
+.dt-intro{max-width:1240px;margin:0 auto;padding:60px 20px 20px}
+.dt-intro .eyebrow{color:#7a6f61;font-size:11px}
+.dt-intro h1{font:500 clamp(40px,5.2vw,68px)/1.05 "Playfair Display",serif;letter-spacing:-.02em;color:#8f6a3c;margin:16px 0 18px}
+.dt-intro h3{font:500 22px "Playfair Display",serif;color:#8f6a3c;margin:0 0 14px}
+.dt-intro p{max-width:720px;font-size:16px;line-height:1.8;color:#5a5a53;margin:0}
+.dt-intro-actions{display:flex;align-items:center;gap:26px;margin-top:28px;flex-wrap:wrap}
+.dt-seats{font-size:10px;letter-spacing:.16em;color:var(--muted)}
+.dt-seats strong{font:600 34px "Playfair Display",serif;color:var(--ink);letter-spacing:0;margin-right:6px;vertical-align:middle}
+.intro{padding-top:70px}
+@media(max-width:900px){.dt-links a:not(.dt-book){display:none}.dt-links .dt-book{padding:16px 24px}.dt-nav{height:84px;padding:0 18px}.dt-brand b{font-size:21px}.dt-brand svg{width:36px;height:36px}.dt-tiles{grid-template-columns:1fr 1fr}.dt-tiles a{padding:26px 8px;font-size:21px;gap:11px}.dt-tiles a:nth-child(3){border-left:0}.dt-tiles a:nth-child(n+3){border-top:1px solid rgba(255,255,255,.25)}.dt-tiles svg{width:30px;height:30px}.dt-call{flex-wrap:wrap;gap:14px;padding:26px 0 30px}.dt-phone{font-size:20px}.dt-res{padding:16px 32px;font-size:12px}.dt-mail{display:none}.dt-top{height:46px}.dt-intro{padding:45px 20px 10px}}
+@media(prefers-reduced-motion:reduce){.dt-track{transform:none!important}}

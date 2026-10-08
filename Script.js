@@ -1,5 +1,5 @@
 /* =========================================================
-   WANDER TOUR — COMPLETE FRONTEND JS
+   DIAMOND TOURS — COMPLETE FRONTEND JS
    Demo only — no real database/payment
    ========================================================= */
 
@@ -11,7 +11,7 @@
 function getRegistrationData() {
     try {
         return JSON.parse(
-            sessionStorage.getItem("wanderDemo") || "{}"
+            sessionStorage.getItem("diamondDemo") || "{}"
         );
     } catch (error) {
         return {};
@@ -22,7 +22,7 @@ function getRegistrationData() {
 function getPaymentData() {
     try {
         return JSON.parse(
-            sessionStorage.getItem("wanderPayment") || "{}"
+            sessionStorage.getItem("diamondPayment") || "{}"
         );
     } catch (error) {
         return {};
@@ -31,7 +31,7 @@ function getPaymentData() {
 
 
 function generateReference() {
-    return "WND-" + Math.floor(1000 + Math.random() * 9000);
+    return "DT-" + Math.floor(1000 + Math.random() * 9000);
 }
 
 
@@ -72,7 +72,7 @@ if (registrationForm) {
         /* Save registration */
 
         sessionStorage.setItem(
-            "wanderDemo",
+            "diamondDemo",
             JSON.stringify(data)
         );
 
@@ -349,7 +349,7 @@ if (payButton) {
 
 
                 sessionStorage.setItem(
-                    "wanderPayment",
+                    "diamondPayment",
                     JSON.stringify(paymentData)
                 );
 
@@ -465,5 +465,57 @@ document
    ========================= */
 
 console.log(
-    "Wander Tour frontend loaded successfully."
+    "Diamond Tours frontend loaded successfully."
 );
+
+
+/* =========================
+   HERO — PICTURES MOVE HORIZONTALLY ON SCROLL
+   ========================= */
+
+(function () {
+
+    const track = document.querySelector(".dt-track");
+
+    if (!track) {
+        return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+    }
+
+    let ticking = false;
+
+    function updateHero() {
+
+        /* track holds the same set of pictures twice,
+           so looping at half its width is seamless */
+
+        const loopWidth = track.offsetWidth / 2;
+
+        if (loopWidth > 0) {
+
+            const shift = (window.scrollY * 0.8) % loopWidth;
+
+            track.style.transform =
+                "translate3d(" + (-shift) + "px,0,0)";
+        }
+
+        ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+
+        if (!ticking) {
+            ticking = true;
+            window.requestAnimationFrame(updateHero);
+        }
+
+    }, { passive: true });
+
+    window.addEventListener("resize", updateHero);
+
+    updateHero();
+
+})();
