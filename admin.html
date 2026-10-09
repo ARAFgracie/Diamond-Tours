@@ -98,8 +98,9 @@
 <div class="login" id="login">
   <form class="login-box" id="loginForm" autocomplete="off">
     <h1>Diamond Tours admin</h1>
-    <p>Enter the admin passcode to edit the website.</p>
-    <input type="password" id="pass" placeholder="Passcode" autofocus>
+    <p id="loginHint">Enter the admin passcode to edit the website.</p>
+    <input type="email" id="email" placeholder="Admin email" autocomplete="username" class="hidden" style="margin-bottom:10px">
+    <input type="password" id="pass" placeholder="Passcode" autocomplete="current-password" autofocus>
     <div class="err" id="loginErr"></div>
     <button class="btn primary" style="width:100%;margin-top:6px" type="submit">Enter</button>
   </form>
@@ -132,6 +133,9 @@
 </div>
 
 <script src="content.js"></script>
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
 <script>
 (function () {
 
@@ -274,6 +278,8 @@
       f("success.button", "Button text")
     ]},
 
+    { id: "bookings", label: "Bookings", custom: "bookings" },
+
     { id: "data", label: "Backup", custom: "data" }
   ];
 
@@ -364,7 +370,22 @@
     file.addEventListener("change", function () {
       var picked = file.files && file.files[0];
       if (!picked) return;
-      shrink(picked, function (url) {
+      shrink(picked, function (url, blob) {
+
+        /* database connected: upload to Supabase Storage, keep only the link */
+        if (window.DTBackend && DTBackend.enabled && blob) {
+          input.value = "Uploading...";
+          DTBackend.uploadImage(blob).then(function (publicUrl) {
+            parent[key] = publicUrl;
+            input.value = publicUrl;
+            paint(); markDirty();
+          }).catch(function (err) {
+            input.value = parent[key] || "";
+            alert("Upload failed: " + err.message);
+          });
+          return;
+        }
+
         parent[key] = url;
         input.value = url.length > 60 ? "(uploaded photo)" : url;
         paint(); markDirty();
@@ -393,7 +414,12 @@
         c.width = Math.round(img.width * scale);
         c.height = Math.round(img.height * scale);
         c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-        done(c.toDataURL("image/jpeg", 0.8));
+        var dataUrl = c.toDataURL("image/jpeg", 0.8);
+        if (c.toBlob) {
+          c.toBlob(function (blob) { done(dataUrl, blob); }, "image/jpeg", 0.8);
+        } else {
+          done(dataUrl, null);
+        }
       };
       img.src = reader.result;
     };
@@ -615,6 +641,14 @@
 
   function buildPasscode(parent) {
 
+    if (window.DTBackend && DTBackend.enabled) {
+      var info = el("div", "field");
+      info.appendChild(el("label", "", "Admin login"));
+      info.appendChild(el("small", "", "Login uses your Supabase account. Change the password in Supabase > Authentication > Users."));
+      parent.appendChild(info);
+      return;
+    }
+
     var wrap = el("div", "field");
     wrap.appendChild(el("label", "", "Change admin passcode"));
     var input = el("input"); input.type = "password"; input.placeholder = "New passcode (min 6 characters)";
@@ -681,6 +715,88 @@
   }
 
 
+  function buildBookings(view) {
+
+    var g = el("div", "group");
+    g.appendChild(el("h2", "", "Bookings"));
+    view.appendChild(g);
+
+    if (!window.DTBackend || !DTBackend.enabled) {
+      g.appendChild(el("div", "note", "Bookings are saved once Supabase is connected (supabase-config.js)."));
+      return;
+    }
+
+    var info = el("div", "note", "Loading bookings...");
+    g.appendChild(info);
+
+    DTBackend.listBookings().then(function (rows) {
+
+      var seats = 0, amount = 0;
+      rows.forEach(function (r) { seats += r.seats; amount += r.amount; });
+
+      info.textContent = rows.length + " bookings · " + seats + " seats · ৳" +
+        amount.toLocaleString("en-US") + " (demo payments)";
+
+      if (!rows.length) return;
+
+      var csv = el("button", "btn sm primary", "Download CSV");
+      csv.type = "button";
+      csv.style.marginBottom = "14px";
+      csv.addEventListener("click", function () {
+        var cols = ["reference", "name", "phone", "email", "institution", "seats", "amount", "payment_method", "payment_status", "note", "created_at"];
+        function q(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+        var lines = [cols.join(",")].concat(rows.map(function (r) {
+          return cols.map(function (c) { return q(r[c]); }).join(",");
+        }));
+        var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "diamond-tours-bookings.csv";
+        a.click();
+      });
+      g.appendChild(csv);
+
+      rows.forEach(function (r) {
+
+        var d = el("details", "item");
+        var sum = el("summary");
+        sum.appendChild(el("span", "n", r.reference));
+        sum.appendChild(el("span", "t", r.name + " · " + r.seats + (r.seats === 1 ? " seat" : " seats")));
+        d.appendChild(sum);
+
+        var body = el("div", "item-body");
+        [
+          ["Phone", r.phone], ["Email", r.email], ["Institution", r.institution],
+          ["Amount", "৳" + Number(r.amount).toLocaleString("en-US")],
+          ["Payment", r.payment_method + " (" + r.payment_status + ")"],
+          ["Note", r.note], ["Booked", new Date(r.created_at).toLocaleString()]
+        ].forEach(function (pair) {
+          if (!pair[1]) return;
+          var line = el("div", "field");
+          line.appendChild(el("label", "", pair[0]));
+          line.appendChild(el("div", "", pair[1]));
+          body.appendChild(line);
+        });
+
+        var del = el("button", "btn sm danger", "Delete booking");
+        del.type = "button";
+        del.addEventListener("click", function () {
+          if (!confirm("Delete booking " + r.reference + "? Its seats become free again.")) return;
+          DTBackend.deleteBooking(r.id).then(function () { render(); })
+            .catch(function (err) { alert("Could not delete: " + err.message); });
+        });
+        body.appendChild(del);
+
+        d.appendChild(body);
+        g.appendChild(d);
+      });
+
+    }).catch(function (err) {
+      info.textContent = "Could not load bookings: " + err.message;
+    });
+  }
+
+
   /* =========================================================
      5. RENDER
      ========================================================= */
@@ -734,6 +850,7 @@
 
     if (tab.custom === "theme") buildTheme(view);
     else if (tab.custom === "data") buildData(view);
+    else if (tab.custom === "bookings") buildBookings(view);
     else renderFields(view, tab);
 
     $("#storageNote").innerHTML = DTStore.remote
@@ -753,8 +870,11 @@
       s.textContent = "Saved";
       s.className = "status saved";
       toast("Saved");
-    }).catch(function () {
-      alert("Could not save. Browser storage may be full. Try a smaller photo or remove some uploaded photos.");
+    }).catch(function (err) {
+      var online = window.DTBackend && DTBackend.enabled;
+      alert(online
+        ? "Could not save online: " + (err && err.message ? err.message : "unknown error") + "\n\nCheck you are logged in as the admin."
+        : "Could not save. Browser storage may be full. Try a smaller photo or remove some uploaded photos.");
     });
   });
 
@@ -762,30 +882,79 @@
     if (dirty) { e.preventDefault(); e.returnValue = ""; }
   });
 
+  var online = !!(window.DTBackend && DTBackend.enabled);
+
+  /* with a database: email + password (Supabase Auth). without: local passcode */
+  if (online) {
+    $("#email").classList.remove("hidden");
+    $("#pass").placeholder = "Password";
+    $("#loginHint").textContent = "Log in with your admin account.";
+  }
+
   function openPanel() {
-    $("#login").classList.add("hidden");
-    $("#panel").classList.remove("hidden");
-    render();
+
+    function show() {
+      $("#login").classList.add("hidden");
+      $("#panel").classList.remove("hidden");
+      render();
+    }
+
+    if (!online) { show(); return; }
+
+    /* load the newest online content before editing, so nothing old is saved over it */
+    DTStore.fetchRemote().then(function (remote) {
+      if (remote) data = remote;
+    }).catch(function () {}).then(show);
   }
 
   $("#loginForm").addEventListener("submit", function (e) {
+
     e.preventDefault();
-    var ok = DTStore.hash($("#pass").value) === DTStore.adminHash();
-    if (ok) {
-      sessionStorage.setItem("dt_admin", "1");
-      openPanel();
-    } else {
-      $("#loginErr").textContent = "Wrong passcode. Try again.";
-      $("#pass").select();
+    var err = $("#loginErr");
+    err.textContent = "";
+
+    if (!online) {
+      if (DTStore.hash($("#pass").value) === DTStore.adminHash()) {
+        sessionStorage.setItem("dt_admin", "1");
+        openPanel();
+      } else {
+        err.textContent = "Wrong passcode. Try again.";
+        $("#pass").select();
+      }
+      return;
     }
+
+    err.textContent = "Checking...";
+
+    DTBackend.signIn($("#email").value.trim(), $("#pass").value).then(function () {
+      return DTBackend.currentAdmin();
+    }).then(function (admin) {
+      if (!admin) {
+        err.textContent = "This account is not an admin.";
+        return DTBackend.signOut();
+      }
+      err.textContent = "";
+      openPanel();
+    }).catch(function (error) {
+      err.textContent = error.message || "Login failed.";
+    });
   });
 
   $("#logout").addEventListener("click", function () {
     sessionStorage.removeItem("dt_admin");
-    location.reload();
+    if (online) {
+      DTBackend.signOut().then(function () { location.reload(); }, function () { location.reload(); });
+    } else {
+      location.reload();
+    }
   });
 
-  if (sessionStorage.getItem("dt_admin") === "1") {
+  /* already logged in? */
+  if (online) {
+    DTBackend.currentAdmin().then(function (admin) {
+      if (admin) openPanel();
+    });
+  } else if (sessionStorage.getItem("dt_admin") === "1") {
     openPanel();
   }
 
