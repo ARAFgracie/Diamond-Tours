@@ -3,106 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diamond Tours — Sajek Escape</title>
+<title>Diamond Tours</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<header class="dt-hero">
-  <div class="dt-track" aria-hidden="true">
-    <div class="dt-pic p1"></div><div class="dt-pic p2"></div><div class="dt-pic p3"></div><div class="dt-pic p4"></div><div class="dt-pic p5"></div><div class="dt-pic p6"></div>
-    <div class="dt-pic p1"></div><div class="dt-pic p2"></div><div class="dt-pic p3"></div><div class="dt-pic p4"></div><div class="dt-pic p5"></div><div class="dt-pic p6"></div>
-  </div>
-  <div class="dt-shade"></div>
+<body data-page="home" data-footer="home.footer">
 
-  <div class="dt-wrap">
-    <div class="dt-top">
-      <div class="dt-contact">
-        <a class="dt-mail" href="mailto:info@diamondtours.com">✉ info@diamondtours.com</a>
-        <a href="tel:+8801XXXXXXXXX">☏ +880 1XXX XXXXXX</a>
-      </div>
-      <div class="dt-social">
-        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.4-1.5 1.5-1.5H17V2h-2.5C11.8 2 10.5 3.7 10.5 6v2H8v3h2.500v10H14V11h2.800l.4-3z"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M22 8.200c-.2-1-.9-1.7-1.9-1.900C18.5 6 12 6 12 6s-6.5 0-8.1.3C2.9 6.5 2.2 7.2 2 8.2 1.7 9.8 1.7 12 1.7 12s0 2.2.3 3.800c.2 1 .9 1.7 1.9 1.900C5.5 18 12 18 12 18s6.5 0 8.1-.3c1-.2 1.7-.9 1.9-1.9.3-1.6.3-3.8.3-3.800s0-2.2-.3-3.800zM10 15V9l5.2 3z"/></svg></a>
-        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
-      </div>
+<header class="hero" id="top">
+  <div class="hero-bg" data-bg="images.hero"></div>
+  <div class="hero-frame">
+
+    <div id="siteNav" class="nav"></div>
+
+    <div class="seat-card" id="seatCard">
+      <h3 data-t="home.card.title"></h3>
+      <div class="seat-label" data-t="home.card.seatsLabel"></div>
+      <div class="seat-pills" id="seatPills"></div>
+      <div class="seat-total"><span data-t="home.card.totalLabel"></span><strong id="seatTotal"></strong></div>
+      <p class="seat-note" id="seatNote"></p>
+      <a class="btn btn-accent" id="seatBook" href="registration.html"><span data-t="home.card.button"></span> <span>↗</span></a>
     </div>
 
-    <nav class="dt-nav">
-      <a class="dt-brand" href="index.html">
-        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="6,14 13,5 27,5 34,14 20,35"/><path d="M6 14h28M13 5l7 9 7-9M20 14v21"/></svg>
-        <span><b>DIAMOND</b><small>TOURS</small></span>
-      </a>
-      <div class="dt-links">
-        <a href="#about">About</a><a href="#details">Details</a><a href="tour.html">Itinerary</a>
-        <a href="registration.html" class="dt-book">Book Now</a>
-      </div>
-    </nav>
-
-    <div class="dt-call">
-      <span class="dt-247"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-2.5 1.500a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><small>24/7</small></span>
-      <a class="dt-phone" href="tel:+8801XXXXXXXXX">+880 1XXX XXXXXX</a>
-      <a class="dt-res" href="registration.html">Reservation</a>
-    </div>
-  </div>
-
-  <div class="dt-tiles">
-    <a href="tour.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 20 9 7l4 7 3-4 6 10z"/></svg>Hill Escapes</a>
-    <a href="tour.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="17" cy="6" r="3"/><path d="M2 15c3-3 5 3 8 0s5 3 8 0 4 0 4 0M2 20c3-3 5 3 8 0s5 3 8 0 4 0 4 0"/></svg>Sea Beach</a>
-    <a href="tour.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 20 12 4l10 16zM12 20l-3-7"/></svg>Camping</a>
-    <a href="tour.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6M14 20c0-3 2-5 4-5s4 2 4 5"/></svg>Group Trips</a>
+    <h1 class="hero-title display" data-t="home.hero.title" data-accent></h1>
+    <p class="hero-text" data-t="home.hero.text"></p>
   </div>
 </header>
 
-<section class="dt-intro">
-  <div class="eyebrow">03 DAYS · 02 NIGHTS · COX'S BAZAR</div>
-  <h1>Leave the ordinary.<br>Meet the sea.</h1>
-  <h3>Your next escape, planned for you</h3>
-  <p>A carefully planned coastal escape for good people, open roads, golden sunsets and unforgettable memories.</p>
-  <div class="dt-intro-actions">
-    <a href="registration.html" class="btn btn-dark">Register for the trip <span>↗</span></a>
-    <a href="#about" class="text-link">Discover the journey ↓</a>
-    <span class="dt-seats"><strong>30</strong> SEATS ONLY</span>
-  </div>
-</section>
+<main>
 
-<section class="intro" id="about">
-  <div class="section-tag">01 — THE IDEA</div>
-  <div>
-    <h2>More than a tour.<br><em>A memory in the making.</em></h2>
-    <p class="lead">Cox's Bazar is where the road meets the sea. We're bringing together a small group for three days of ocean air, long beaches, local food, sunset walks and absolutely no boring schedules.</p>
-  </div>
-</section>
+  <section class="sec" id="trip">
+    <div class="showcase">
+      <div class="sc-head">
+        <div>
+          <h2 class="sc-title" data-t="home.showcase.title"></h2>
+          <div class="sc-tags" id="scTags"></div>
+        </div>
+        <div class="sc-meta">
+          <div class="sc-price"><span id="scPrice"></span><small>pp</small></div>
+          <div class="sc-actions">
+            <button class="heart" id="heartBtn" type="button" aria-label="Save this trip">♡</button>
+            <a class="pill pill-accent" href="registration.html" data-t="home.showcase.button"></a>
+          </div>
+        </div>
+      </div>
+      <div class="bento" id="bento"></div>
+    </div>
+  </section>
 
-<section class="stats" id="details">
-  <div><span>WHEN</span><strong>18 — 20<br>DEC 2026</strong></div>
-  <div><span>WHERE</span><strong>Cox's Bazar<br>Bangladesh</strong></div>
-  <div><span>FROM</span><strong>৳ 3,990<br><small>per person</small></strong></div>
-  <div><span>GROUP</span><strong>24<br><small>spots</small></strong></div>
-</section>
+  <section class="sec" id="about">
+    <div class="idea">
+      <div class="tag" data-t="home.idea.tag"></div>
+      <div>
+        <h2 class="display sec-title" data-t="home.idea.title" data-accent></h2>
+        <p class="lead" data-t="home.idea.text"></p>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </section>
 
-<section class="experience">
-  <div class="experience-image"></div>
-  <div class="experience-copy">
-    <div class="section-tag">02 — THE EXPERIENCE</div>
-    <h2>Wake up<br><em>by the sea.</em></h2>
-    <p>Ocean mornings. Long conversations on the road. Local breakfast. A little adventure. Then a sunset walk beside the world's longest natural sandy beach.</p>
-    <div class="chips"><span>Ocean views</span><span>Sunset</span><span>Local food</span><span>Beach walk</span></div>
-    <a href="tour.html" class="arrow-link">See full itinerary <span>→</span></a>
-  </div>
-</section>
+  <section class="sec" id="experience">
+    <div class="hl">
+      <div class="hl-head">
+        <div class="tag" data-t="home.highlights.tag"></div>
+        <h2 class="display" data-t="home.highlights.title"></h2>
+      </div>
+      <div class="hl-grid" id="hlGrid"></div>
+      <a href="tour.html" class="btn btn-light hl-link"><span data-t="home.highlights.link"></span> <span>→</span></a>
+    </div>
+  </section>
 
-<section class="final-cta">
-  <div class="section-tag">03 — YOUR SEAT</div>
-  <h2>Ready to<br><em>get away?</em></h2>
-  <p>Only 24 spots. Once they're gone, they're gone.</p>
-  <a href="registration.html" class="btn btn-dark">Start registration <span>↗</span></a>
-</section>
+  <section class="moments" id="moments">
+    <div class="m-head">
+      <h2 class="display" data-t="home.moments.title" data-accent></h2>
+      <p data-t="home.moments.text"></p>
+    </div>
+    <div class="m-track" id="mTrack"></div>
+  </section>
+
+  <section class="sec">
+    <div class="final">
+      <div class="tag" data-t="home.final.tag"></div>
+      <h2 class="display" data-t="home.final.title" data-accent></h2>
+      <p data-t="home.final.text"></p>
+      <a href="registration.html" class="btn btn-accent"><span data-t="home.final.button"></span> <span>↗</span></a>
+    </div>
+  </section>
+
 </main>
 
-<footer><span>© 2026 DIAMOND TOURS</span><span>MADE FOR THE ROAD.</span></footer>
+<div id="siteFooter"></div>
+<script src="content.js"></script>
 <script src="Script.js"></script>
 </body>
 </html>

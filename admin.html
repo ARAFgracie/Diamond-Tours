@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Diamond Tours</title>
+<style>
+  :root{--bg:#0d1417;--panel:#142026;--panel2:#1b2a31;--line:#2a3b43;--text:#eef3f4;--muted:#8fa3ab;--accent:#f2542d;--gold:#f5b83d;--ok:#37c58a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding-bottom:96px}
+  button,input,select,textarea{font:inherit;color:inherit}
+  .hidden{display:none!important}
+
+  /* login */
+  .login{min-height:100vh;display:grid;place-items:center;padding:20px}
+  .login-box{width:min(380px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px}
+  .login-box h1{font-size:22px;margin-bottom:6px}
+  .login-box p{color:var(--muted);font-size:14px;margin-bottom:20px}
+  .err{color:#ff7a7a;font-size:13px;min-height:20px;margin-top:8px}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:20;background:rgba(13,20,23,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;max-width:980px;margin:0 auto}
+  .top-row h1{font-size:17px}
+  .top-row h1 span{color:var(--gold)}
+  .top-actions{display:flex;gap:8px}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding:0 16px 12px;max-width:980px;margin:0 auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  main{max-width:980px;margin:0 auto;padding:18px 16px}
+  .note{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:18px}
+  .note b{color:var(--gold)}
+
+  .group{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:16px}
+  .group>h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+
+  .field{margin-bottom:14px}
+  .field>label,.lab{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .field small{display:block;color:#617780;font-size:11px;margin-top:4px}
+  input[type=text],input[type=number],input[type=password],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;outline:none}
+  textarea{min-height:84px;resize:vertical}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+
+  .btn{border:0;border-radius:999px;padding:11px 18px;font-weight:700;font-size:13px;cursor:pointer;background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.ok{background:var(--ok);border-color:var(--ok);color:#06251a}
+  .btn.danger{color:#ff8a8a}
+  .btn.sm{padding:7px 12px;font-size:12px}
+
+  /* lists */
+  .list{border:1px dashed var(--line);border-radius:16px;padding:12px;margin-bottom:14px}
+  .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .item{background:var(--panel2);border:1px solid var(--line);border-radius:14px;margin-bottom:8px}
+  .item>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:11px 12px;font-size:14px;font-weight:600}
+  .item>summary::-webkit-details-marker{display:none}
+  .item>summary .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item>summary .n{color:var(--gold);font-size:12px}
+  .item-body{padding:4px 12px 12px}
+  .ctrl{display:flex;gap:4px}
+  .ctrl button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-size:13px}
+
+  /* images */
+  .imgfield{display:flex;gap:12px;align-items:flex-start}
+  .imgfield .thumb{width:84px;height:84px;border-radius:12px;background:var(--bg) center/cover;border:1px solid var(--line);flex:none}
+  .imgfield .col{flex:1;min-width:0}
+  .imgfield .row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+  .file{font-size:12px;color:var(--muted)}
+
+  /* theme */
+  .colors{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .color{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:10px}
+  .color input[type=color]{width:46px;height:46px;border:0;background:none;padding:0;cursor:pointer;flex:none}
+  .color .meta{flex:1;min-width:0}
+  .color .meta b{display:block;font-size:13px}
+  .color .meta small{color:var(--muted);font-size:11px}
+  .color input[type=text]{margin-top:4px;padding:7px 10px;font-size:13px;font-family:ui-monospace,monospace}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .preview{border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .preview .bar{border-radius:999px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px}
+  .preview .card{border-radius:16px;padding:14px;font-size:13px}
+  .preview .b{display:inline-block;border-radius:999px;padding:9px 18px;font-weight:700;font-size:12px;color:#fff}
+
+  /* save bar */
+  .savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(13,20,23,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .savebar-row{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .status{font-size:13px;color:var(--muted)}
+  .status.dirty{color:var(--gold)}
+  .status.saved{color:var(--ok)}
+  .toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--ok);color:#06251a;padding:10px 20px;border-radius:999px;font-weight:700;font-size:13px;z-index:60}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div class="login" id="login">
+  <form class="login-box" id="loginForm" autocomplete="off">
+    <h1>Diamond Tours admin</h1>
+    <p>Enter the admin passcode to edit the website.</p>
+    <input type="password" id="pass" placeholder="Passcode" autofocus>
+    <div class="err" id="loginErr"></div>
+    <button class="btn primary" style="width:100%;margin-top:6px" type="submit">Enter</button>
+  </form>
+</div>
+
+<!-- ================= PANEL ================= -->
+<div id="panel" class="hidden">
+  <div class="top">
+    <div class="top-row">
+      <h1>Diamond <span>Admin</span></h1>
+      <div class="top-actions">
+        <a class="btn sm" href="index.html" target="_blank" style="text-decoration:none">View site ↗</a>
+        <button class="btn sm" id="logout" type="button">Log out</button>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+
+  <main>
+    <div class="note" id="storageNote"></div>
+    <div id="view"></div>
+  </main>
+
+  <div class="savebar">
+    <div class="savebar-row">
+      <span class="status" id="status">No changes</span>
+      <button class="btn primary" id="saveBtn" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="content.js"></script>
+<script>
+(function () {
+
+  /* =========================================================
+     1. WHAT CAN BE EDITED  (one list = the whole admin)
+     t: text | area | num | img | list
+     h: group heading
+     ========================================================= */
+
+  var TITLE = { t: "area", rows: 2, hint: "Press Enter for a new line. The 2nd line is coloured." };
+
+  function f(p, l, extra) {
+    var o = { p: p, l: l, t: "text" };
+    for (var k in (extra || {})) o[k] = extra[k];
+    return o;
+  }
+
+  var SCHEMA = [
+
+    { id: "general", label: "General", fields: [
+      { h: "Brand & contact" },
+      f("site.name", "Site name"),
+      f("site.email", "Email"),
+      f("site.phone", "Phone number"),
+      f("site.facebook", "Facebook link"),
+      f("site.instagram", "Instagram link"),
+      f("site.youtube", "YouTube link"),
+      f("site.refPrefix", "Booking reference prefix", { hint: "DT gives references like DT-4821" }),
+      f("nav.cta", "Top button text"),
+      { custom: "passcode" }
+    ]},
+
+    { id: "theme", label: "Theme colours", custom: "theme" },
+
+    { id: "trip", label: "Trip & price", fields: [
+      { h: "This feeds the home page, registration, payment and success pages" },
+      f("trip.name", "Trip name"),
+      f("trip.destination", "Destination"),
+      f("trip.country", "Country"),
+      f("trip.departFrom", "Departs from"),
+      f("trip.dates", "Dates (short)"),
+      f("trip.datesLong", "Dates (long)"),
+      f("trip.duration", "Duration"),
+      f("trip.price", "Price per person (BDT)", { t: "num" }),
+      f("trip.seats", "Total seats", { t: "num" }),
+      f("trip.maxPerBooking", "Max seats per booking", { t: "num" })
+    ]},
+
+    { id: "home", label: "Home page", fields: [
+      { h: "Hero" },
+      f("home.hero.title", "Big headline", TITLE),
+      f("home.hero.text", "Text under headline", { t: "area" }),
+      { h: "Seat card" },
+      f("home.card.title", "Card title"),
+      f("home.card.seatsLabel", "Seats label"),
+      f("home.card.totalLabel", "Total label"),
+      f("home.card.button", "Button text"),
+      f("home.card.note", "Note under total", { hint: "You can use {seats} {dates} {price} {destination}" }),
+      { h: "Trip showcase (photo grid)" },
+      f("home.showcase.title", "Title", TITLE),
+      { p: "home.showcase.tags", l: "Tags", t: "list", item: "text", hint: "{duration} {seats} {dates} work here" },
+      f("home.showcase.button", "Button text"),
+      { h: "The idea" },
+      f("home.idea.tag", "Small tag"),
+      f("home.idea.title", "Title", TITLE),
+      f("home.idea.text", "Text", { t: "area", rows: 4 }),
+      { h: "Experience cards" },
+      f("home.highlights.tag", "Small tag"),
+      f("home.highlights.title", "Title", TITLE),
+      f("home.highlights.link", "Link button text"),
+      { p: "home.highlights.items", l: "Cards", t: "list", titleKey: "title",
+        blank: { img: "", title: "New card", text: "" },
+        item: [ f("img", "Photo", { t: "img" }), f("title", "Title"), f("text", "Text", { t: "area" }) ] },
+      { h: "Photo pills (moves while scrolling)" },
+      f("home.moments.title", "Title", TITLE),
+      f("home.moments.text", "Text", { t: "area" }),
+      { p: "home.moments.items", l: "Photos", t: "list", titleKey: "title",
+        blank: { img: "", title: "New photo", text: "" },
+        item: [ f("img", "Photo", { t: "img" }), f("title", "Title"), f("text", "Caption") ] },
+      { h: "Final call to action" },
+      f("home.final.tag", "Small tag"),
+      f("home.final.title", "Title", TITLE),
+      f("home.final.text", "Text", { hint: "{seats} works here" }),
+      f("home.final.button", "Button text"),
+      { h: "Footer" },
+      f("home.footer", "Footer text")
+    ]},
+
+    { id: "images", label: "Images", fields: [
+      { h: "Home page photos" },
+      f("images.hero", "Hero background (shown blurred)", { t: "img" }),
+      { p: "images.bento", l: "Photo grid (first = large, then 4 small)", t: "list", item: "img", blank: "" },
+      { custom: "imgtip" }
+    ]},
+
+    { id: "tour", label: "Itinerary", fields: [
+      { h: "Page heading" },
+      f("tour.head.tag", "Small tag"),
+      f("tour.head.title", "Title", TITLE),
+      f("tour.head.text", "Text", { t: "area" }),
+      { h: "Days" },
+      { p: "tour.days", l: "Days", t: "list", titleKey: "title", numKey: "no",
+        blank: { no: "04", date: "", title: "New day", text: "", schedule: [] },
+        item: [
+          f("no", "Day number"), f("date", "Date label"), f("title", "Title"), f("text", "Text", { t: "area" }),
+          { p: "schedule", k: "schedule", l: "Schedule", t: "list", titleKey: "time", blank: { time: "", text: "" },
+            item: [ f("time", "Time"), f("text", "What happens") ] }
+        ] },
+      { h: "What's included" },
+      f("tour.included.tag", "Small tag"),
+      f("tour.included.title", "Title", TITLE),
+      { p: "tour.included.items", l: "Included items", t: "list", item: "text", blank: "" },
+      { h: "Bottom call to action" },
+      f("tour.cta.title", "Title", TITLE),
+      f("tour.cta.button", "Button text")
+    ]},
+
+    { id: "registration", label: "Registration", fields: [
+      f("registration.tag", "Small tag"),
+      f("registration.title", "Title", TITLE),
+      f("registration.text", "Intro text", { t: "area" }),
+      f("registration.submit", "Submit button text"),
+      f("registration.note", "Small note under button"),
+      f("registration.footer", "Footer text")
+    ]},
+
+    { id: "payment", label: "Payment", fields: [
+      f("payment.tag", "Small tag"),
+      f("payment.title", "Title", TITLE),
+      f("payment.text", "Intro text", { t: "area" }),
+      f("payment.note", "Small note under button"),
+      f("payment.footer", "Footer text")
+    ]},
+
+    { id: "success", label: "Success page", fields: [
+      f("success.tag", "Small tag"),
+      f("success.title", "Title", TITLE),
+      f("success.text", "Text after the guest name", { t: "area" }),
+      f("success.small", "Small note", { t: "area" }),
+      f("success.button", "Button text")
+    ]},
+
+    { id: "data", label: "Backup", custom: "data" }
+  ];
+
+
+  var PRESETS = {
+    "Sunset":  { accent: "#f2542d", accent2: "#f5b83d", dark: "#07161b", paper: "#fff3e4", ink: "#16120f" },
+    "Ocean":   { accent: "#0f9fb8", accent2: "#ffd166", dark: "#06202b", paper: "#eaf6f8", ink: "#0b1a20" },
+    "Forest":  { accent: "#2f9e6b", accent2: "#e9c46a", dark: "#0c1f17", paper: "#f1f5ec", ink: "#14201a" },
+    "Royal":   { accent: "#7b4dff", accent2: "#ffc857", dark: "#120d2a", paper: "#f4f1ff", ink: "#17122b" },
+    "Rose":    { accent: "#d6336c", accent2: "#f6c453", dark: "#1d0d16", paper: "#fff0f4", ink: "#22121a" }
+  };
+
+  var COLOR_LABELS = {
+    accent:  ["Main accent", "Buttons, highlights, day numbers"],
+    accent2: ["Gold detail", "Small highlights, ticks, hero headline 2nd line"],
+    dark:    ["Dark", "Dark cards, nav bar, final call to action"],
+    paper:   ["Page background", "Light background of every page"],
+    ink:     ["Text", "Main text colour"]
+  };
+
+
+  /* =========================================================
+     2. STATE + HELPERS
+     ========================================================= */
+
+  var data = DTStore.getForEdit();
+  var dirty = false;
+  var current = "general";
+
+  function $(s, r) { return (r || document).querySelector(s); }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function clone(x) { return JSON.parse(JSON.stringify(x)); }
+
+  function parentOf(path) {
+    var parts = path.split(".");
+    var key = parts.pop();
+    var obj = data;
+    parts.forEach(function (k) { obj = obj[k]; });
+    return { obj: obj, key: key };
+  }
+
+  function markDirty() {
+    dirty = true;
+    var s = $("#status");
+    s.textContent = "Unsaved changes";
+    s.className = "status dirty";
+  }
+
+  function toast(text) {
+    var t = el("div", "toast", text);
+    document.body.appendChild(t);
+    setTimeout(function () { t.remove(); }, 1800);
+  }
+
+
+  /* =========================================================
+     3. FIELD BUILDERS
+     ========================================================= */
+
+  function buildImage(parent, key, label) {
+
+    var wrap = el("div", "field");
+    if (label) wrap.appendChild(el("label", "", label));
+
+    var box = el("div", "imgfield");
+    var thumb = el("div", "thumb");
+    var col = el("div", "col");
+    var input = el("input"); input.type = "text";
+    input.placeholder = "images/photo.jpg or a full link";
+    input.value = parent[key] || "";
+
+    function paint() {
+      var v = parent[key] || "";
+      thumb.style.backgroundImage = v ? 'url("' + v.replace(/"/g, "%22") + '")' : "none";
+    }
+
+    input.addEventListener("input", function () { parent[key] = input.value.trim(); paint(); markDirty(); });
+
+    var row = el("div", "row");
+    var file = el("input", "file"); file.type = "file"; file.accept = "image/*";
+    file.addEventListener("change", function () {
+      var picked = file.files && file.files[0];
+      if (!picked) return;
+      shrink(picked, function (url) {
+        parent[key] = url;
+        input.value = url.length > 60 ? "(uploaded photo)" : url;
+        paint(); markDirty();
+      });
+    });
+    row.appendChild(file);
+
+    col.appendChild(input);
+    col.appendChild(row);
+    box.appendChild(thumb);
+    box.appendChild(col);
+    wrap.appendChild(box);
+    paint();
+    return wrap;
+  }
+
+  /* resize a picked photo so it fits in browser storage */
+  function shrink(fileObj, done) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1400;
+        var scale = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement("canvas");
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        done(c.toDataURL("image/jpeg", 0.8));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(fileObj);
+  }
+
+  function buildField(def, parent, key) {
+
+    if (def.t === "list") {
+      return buildList(def, parent, key);
+    }
+
+    if (def.t === "img") {
+      return buildImage(parent, key, def.l);
+    }
+
+    var wrap = el("div", "field");
+    wrap.appendChild(el("label", "", def.l));
+
+    var input;
+    if (def.t === "area") {
+      input = el("textarea");
+      if (def.rows) input.style.minHeight = (def.rows * 30 + 36) + "px";
+    } else {
+      input = el("input");
+      input.type = def.t === "num" ? "number" : "text";
+    }
+
+    input.value = parent[key] == null ? "" : parent[key];
+
+    input.addEventListener("input", function () {
+      parent[key] = def.t === "num" ? Number(input.value) : input.value;
+      markDirty();
+    });
+
+    wrap.appendChild(input);
+    if (def.hint) wrap.appendChild(el("small", "", def.hint));
+    return wrap;
+  }
+
+  function buildList(def, parent, key) {
+
+    if (!Array.isArray(parent[key])) parent[key] = [];
+    var arr = parent[key];
+
+    var box = el("div", "list");
+    var head = el("div", "list-head");
+    head.appendChild(el("span", "lab", def.l));
+    var add = el("button", "btn sm primary", "+ Add");
+    add.type = "button";
+    head.appendChild(add);
+    box.appendChild(head);
+
+    if (def.hint) box.appendChild(el("small", "", def.hint));
+
+    var holder = el("div");
+    box.appendChild(holder);
+
+    function title(item, i) {
+      if (typeof item === "string") return item || "(empty)";
+      return item[def.titleKey] || "Item " + (i + 1);
+    }
+
+    function redraw() {
+
+      holder.textContent = "";
+
+      arr.forEach(function (item, i) {
+
+        var d = el("details", "item");
+        var sum = el("summary");
+        sum.appendChild(el("span", "n", String(i + 1)));
+        var t = el("span", "t", title(item, i));
+        sum.appendChild(t);
+
+        var ctrl = el("div", "ctrl");
+        function ctl(txt, fn, danger) {
+          var b = el("button", "", txt);
+          b.type = "button";
+          if (danger) b.style.color = "#ff8a8a";
+          b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); fn(); });
+          ctrl.appendChild(b);
+        }
+        ctl("↑", function () { if (i > 0) { arr.splice(i - 1, 0, arr.splice(i, 1)[0]); markDirty(); redraw(); } });
+        ctl("↓", function () { if (i < arr.length - 1) { arr.splice(i + 1, 0, arr.splice(i, 1)[0]); markDirty(); redraw(); } });
+        ctl("✕", function () { if (confirm("Remove this item?")) { arr.splice(i, 1); markDirty(); redraw(); } }, true);
+        sum.appendChild(ctrl);
+        d.appendChild(sum);
+
+        var body = el("div", "item-body");
+
+        if (def.item === "text") {
+          var inp = el("input"); inp.type = "text"; inp.value = item;
+          inp.addEventListener("input", function () { arr[i] = inp.value; t.textContent = inp.value || "(empty)"; markDirty(); });
+          body.appendChild(inp);
+        } else if (def.item === "img") {
+          var holderObj = { v: item };
+          var imgField = buildImage({ get v() { return arr[i]; }, set v(x) { arr[i] = x; } }, "v", "");
+          body.appendChild(imgField);
+        } else {
+          def.item.forEach(function (sub) {
+            var k = sub.k || sub.p;
+            var fieldEl = buildField(sub, item, k);
+            body.appendChild(fieldEl);
+            if (k === def.titleKey) {
+              var inputInside = fieldEl.querySelector("input,textarea");
+              if (inputInside) inputInside.addEventListener("input", function () { t.textContent = inputInside.value || "Item " + (i + 1); });
+            }
+          });
+        }
+
+        d.appendChild(body);
+        holder.appendChild(d);
+      });
+    }
+
+    add.addEventListener("click", function () {
+      arr.push(def.item === "text" || def.item === "img" ? (def.blank || "") : clone(def.blank || {}));
+      markDirty();
+      redraw();
+      var last = holder.lastElementChild;
+      if (last) last.open = true;
+    });
+
+    redraw();
+    return box;
+  }
+
+
+  /* =========================================================
+     4. CUSTOM TABS
+     ========================================================= */
+
+  function buildTheme(view) {
+
+    var g = el("div", "group");
+    g.appendChild(el("h2", "", "Website colours"));
+
+    var presets = el("div", "presets");
+    Object.keys(PRESETS).forEach(function (name) {
+      var b = el("button", "btn sm", name);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        data.theme = clone(PRESETS[name]);
+        markDirty();
+        render();
+      });
+      presets.appendChild(b);
+    });
+    g.appendChild(el("div", "lab", "Quick presets"));
+    g.appendChild(presets);
+
+    var grid = el("div", "colors");
+    var preview = el("div", "preview");
+
+    function paintPreview() {
+      var t = data.theme;
+      preview.style.background = t.paper;
+      preview.style.color = t.ink;
+      preview.textContent = "";
+
+      var bar = el("div", "bar");
+      bar.style.background = t.dark; bar.style.color = "#fff";
+      bar.appendChild(el("span", "", "◆ " + data.site.name));
+      var bb = el("span", "b", "Book Now"); bb.style.background = t.accent;
+      bar.appendChild(bb);
+
+      var card = el("div", "card");
+      card.style.background = t.dark; card.style.color = "#fff";
+      var h = el("div", "", "Leave the ordinary."); h.style.fontWeight = "800"; h.style.fontSize = "20px";
+      var h2 = el("div", "", "Meet the sea."); h2.style.fontWeight = "800"; h2.style.fontSize = "20px"; h2.style.color = t.accent2;
+      card.appendChild(h); card.appendChild(h2);
+
+      var txt = el("div", "", "This is how text looks on the page background.");
+      var btn = el("span", "b", "Register ↗"); btn.style.background = t.accent; btn.style.width = "fit-content";
+
+      preview.appendChild(bar); preview.appendChild(card); preview.appendChild(txt); preview.appendChild(btn);
+    }
+
+    Object.keys(COLOR_LABELS).forEach(function (key) {
+
+      var row = el("div", "color");
+      var picker = el("input"); picker.type = "color"; picker.value = data.theme[key];
+
+      var meta = el("div", "meta");
+      meta.appendChild(el("b", "", COLOR_LABELS[key][0]));
+      meta.appendChild(el("small", "", COLOR_LABELS[key][1]));
+      var hex = el("input"); hex.type = "text"; hex.value = data.theme[key]; hex.maxLength = 7;
+      meta.appendChild(hex);
+
+      picker.addEventListener("input", function () {
+        data.theme[key] = picker.value; hex.value = picker.value; markDirty(); paintPreview();
+      });
+
+      hex.addEventListener("input", function () {
+        var v = hex.value.trim();
+        if (v && v[0] !== "#") v = "#" + v;
+        if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+          data.theme[key] = v; picker.value = v; markDirty(); paintPreview();
+        }
+      });
+
+      row.appendChild(picker);
+      row.appendChild(meta);
+      grid.appendChild(row);
+    });
+
+    g.appendChild(el("div", "lab", "Colour codes (tap the square or type a code like #f2542d)"));
+    g.appendChild(grid);
+    view.appendChild(g);
+
+    var g2 = el("div", "group");
+    g2.appendChild(el("h2", "", "Preview"));
+    g2.appendChild(preview);
+    view.appendChild(g2);
+
+    paintPreview();
+  }
+
+  function buildPasscode(parent) {
+
+    var wrap = el("div", "field");
+    wrap.appendChild(el("label", "", "Change admin passcode"));
+    var input = el("input"); input.type = "password"; input.placeholder = "New passcode (min 6 characters)";
+    var btn = el("button", "btn sm", "Update passcode"); btn.type = "button"; btn.style.marginTop = "8px";
+    btn.addEventListener("click", function () {
+      if (input.value.length < 6) { alert("Use at least 6 characters."); return; }
+      DTStore.setAdminPass(input.value);
+      input.value = "";
+      toast("Passcode updated");
+    });
+    wrap.appendChild(input);
+    wrap.appendChild(btn);
+    wrap.appendChild(el("small", "", "Saved in this browser for now. Real login comes with Supabase."));
+    parent.appendChild(wrap);
+  }
+
+  function buildData(view) {
+
+    var g = el("div", "group");
+    g.appendChild(el("h2", "", "Backup & restore"));
+
+    var exp = el("button", "btn primary", "Download backup (content.json)");
+    exp.type = "button";
+    exp.addEventListener("click", function () {
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "diamond-tours-content.json";
+      a.click();
+    });
+
+    var impWrap = el("div", "field"); impWrap.style.marginTop = "16px";
+    impWrap.appendChild(el("label", "", "Restore from a backup file"));
+    var file = el("input", "file"); file.type = "file"; file.accept = ".json,application/json";
+    file.addEventListener("change", function () {
+      var picked = file.files[0];
+      if (!picked) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try {
+          var parsed = JSON.parse(r.result);
+          data = DTStore.defaults ? Object.assign(clone(DTStore.defaults), parsed) : parsed;
+          markDirty(); render(); toast("Backup loaded. Press Save.");
+        } catch (e) { alert("That file is not a valid backup."); }
+      };
+      r.readAsText(picked);
+    });
+    impWrap.appendChild(file);
+
+    var reset = el("button", "btn danger", "Reset everything to default");
+    reset.type = "button"; reset.style.marginTop = "16px";
+    reset.addEventListener("click", function () {
+      if (!confirm("Reset ALL text, colours, prices and images to the original?")) return;
+      DTStore.reset().then(function () {
+        data = DTStore.getForEdit();
+        dirty = false;
+        render();
+        toast("Reset done");
+      });
+    });
+
+    g.appendChild(exp); g.appendChild(impWrap); g.appendChild(reset);
+    view.appendChild(g);
+  }
+
+
+  /* =========================================================
+     5. RENDER
+     ========================================================= */
+
+  function renderFields(view, tab) {
+
+    var group = null;
+
+    tab.fields.forEach(function (def) {
+
+      if (def.h) {
+        group = el("div", "group");
+        group.appendChild(el("h2", "", def.h));
+        view.appendChild(group);
+        return;
+      }
+
+      if (!group) {
+        group = el("div", "group");
+        view.appendChild(group);
+      }
+
+      if (def.custom === "passcode") { buildPasscode(group); return; }
+
+      if (def.custom === "imgtip") {
+        group.appendChild(el("small", "", "Tip: put photos in the images folder on GitHub and type images/name.jpg, or use the file picker to upload a photo (it is shrunk automatically)."));
+        return;
+      }
+
+      var pp = parentOf(def.p);
+      group.appendChild(buildField(def, pp.obj, pp.key));
+    });
+  }
+
+  function render() {
+
+    var tabs = $("#tabs");
+    tabs.textContent = "";
+
+    SCHEMA.forEach(function (tab) {
+      var b = el("button", "tab" + (tab.id === current ? " on" : ""), tab.label);
+      b.type = "button";
+      b.addEventListener("click", function () { current = tab.id; render(); window.scrollTo(0, 0); });
+      tabs.appendChild(b);
+    });
+
+    var view = $("#view");
+    view.textContent = "";
+
+    var tab = SCHEMA.filter(function (t) { return t.id === current; })[0];
+
+    if (tab.custom === "theme") buildTheme(view);
+    else if (tab.custom === "data") buildData(view);
+    else renderFields(view, tab);
+
+    $("#storageNote").innerHTML = DTStore.remote
+      ? "<b>Connected</b> to the database. Changes go live for everyone when you press Save."
+      : "<b>Heads up:</b> until Supabase is connected, changes are saved in <b>this browser only</b>. Use Backup to keep a copy.";
+  }
+
+
+  /* =========================================================
+     6. SAVE + LOGIN
+     ========================================================= */
+
+  $("#saveBtn").addEventListener("click", function () {
+    DTStore.save(data).then(function () {
+      dirty = false;
+      var s = $("#status");
+      s.textContent = "Saved";
+      s.className = "status saved";
+      toast("Saved");
+    }).catch(function () {
+      alert("Could not save. Browser storage may be full. Try a smaller photo or remove some uploaded photos.");
+    });
+  });
+
+  window.addEventListener("beforeunload", function (e) {
+    if (dirty) { e.preventDefault(); e.returnValue = ""; }
+  });
+
+  function openPanel() {
+    $("#login").classList.add("hidden");
+    $("#panel").classList.remove("hidden");
+    render();
+  }
+
+  $("#loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var ok = DTStore.hash($("#pass").value) === DTStore.adminHash();
+    if (ok) {
+      sessionStorage.setItem("dt_admin", "1");
+      openPanel();
+    } else {
+      $("#loginErr").textContent = "Wrong passcode. Try again.";
+      $("#pass").select();
+    }
+  });
+
+  $("#logout").addEventListener("click", function () {
+    sessionStorage.removeItem("dt_admin");
+    location.reload();
+  });
+
+  if (sessionStorage.getItem("dt_admin") === "1") {
+    openPanel();
+  }
+
+})();
+</script>
+</body>
+</html>

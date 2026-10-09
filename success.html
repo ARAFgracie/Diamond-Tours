@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diamond Tours — Registration Confirmed</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diamond Tours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body class="success-page">
+<body class="success-page" data-page="success" data-title="Registration Confirmed">
+
 <div class="success-card">
-  <div class="success-icon">✓</div><div class="section-tag">PAYMENT SUCCESSFUL</div>
-  <h1>You're on<br><em>the list.</em></h1>
-  <p>Thanks, <strong id="guestName">traveller</strong>. Your demo registration and payment have been completed.</p>
-  <div class="ticket"><div><span>TRIP</span><strong>SAJEK ESCAPE</strong></div><div><span>DATE</span><strong>18–20 DEC 2026</strong></div><div><span>STATUS</span><strong>CONFIRMED</strong></div><div><span>REFERENCE</span><strong id="ref">DT-0000</strong></div></div>
-  <p class="small">For the real version, this screen can connect to a database, payment gateway and confirmation email.</p>
-  <a href="index.html" class="btn btn-dark">Back to home <span>↗</span></a>
+  <a class="brand" data-brand href="index.html" style="justify-content:center;margin-bottom:22px"></a>
+  <div class="success-icon">✓</div>
+  <div class="tag" data-t="success.tag"></div>
+  <h1 class="display" data-t="success.title" data-accent></h1>
+  <p>Thanks, <strong id="guestName">traveller</strong>. <span data-t="success.text"></span></p>
+  <div class="ticket">
+    <div><span>TRIP</span><strong data-t="trip.name" style="text-transform:uppercase"></strong></div>
+    <div><span>DATE</span><strong data-t="trip.dates"></strong></div>
+    <div><span>STATUS</span><strong>CONFIRMED</strong></div>
+    <div><span>REFERENCE</span><strong id="ref">DT-0000</strong></div>
+  </div>
+  <p class="small" data-t="success.small"></p>
+  <a href="index.html" class="btn btn-accent"><span data-t="success.button"></span> <span>↗</span></a>
 </div>
+<script src="content.js"></script>
 <script src="Script.js"></script>
-</body></html>
+</body>
+</html>

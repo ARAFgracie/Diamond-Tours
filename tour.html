@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diamond Tours — Itinerary</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diamond Tours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<nav class="nav dark-nav"><a class="brand" href="index.html"><span>D</span> DIAMOND TOURS</a><div class="navlinks"><a href="index.html">Home</a><a href="tour.html">Itinerary</a><a href="registration.html" class="nav-cta">Register</a></div></nav>
-<header class="page-head"><div class="section-tag">THE JOURNEY</div><h1>Three days.<br><em>One story.</em></h1><p>Here's what your escape looks like from the moment we leave the city.</p></header>
+<body data-page="tour" data-title="Itinerary" data-footer="__home">
 
-<section class="timeline">
-  <article class="day"><div class="day-no">01</div><div class="day-main"><span>18 DEC · FRIDAY</span><h2>The road begins.</h2><p>Meet the group, settle in and leave Chittagong behind. The destination starts feeling real as the hills appear.</p><div class="schedule"><div><b>06:30 AM</b> Meet & depart</div><div><b>09:30 AM</b> Breakfast stop</div><div><b>02:00 PM</b> Lunch & check-in</div><div><b>05:00 PM</b> Sajek sunset</div><div><b>08:00 PM</b> Dinner + bonfire</div></div></div></article>
-  <article class="day"><div class="day-no">02</div><div class="day-main"><span>19 DEC · SATURDAY</span><h2>Above the clouds.</h2><p>The day for viewpoints, slow mornings and the kind of photos you'll keep coming back to.</p><div class="schedule"><div><b>05:30 AM</b> Sunrise point</div><div><b>08:00 AM</b> Breakfast</div><div><b>10:00 AM</b> Konglak Para</div><div><b>01:00 PM</b> Local lunch</div><div><b>04:30 PM</b> Sunset & free time</div></div></div></article>
-  <article class="day"><div class="day-no">03</div><div class="day-main"><span>20 DEC · SUNDAY</span><h2>Take the memories home.</h2><p>One last breakfast, a final look at the hills, and then the road back home.</p><div class="schedule"><div><b>08:00 AM</b> Breakfast</div><div><b>10:00 AM</b> Check-out</div><div><b>01:00 PM</b> Lunch on route</div><div><b>07:00 PM</b> Arrival in Chittagong</div></div></div></article>
+<div id="siteNav"></div>
+
+<header class="page-head">
+  <div class="tag" data-t="tour.head.tag"></div>
+  <h1 class="display" data-t="tour.head.title" data-accent></h1>
+  <p data-t="tour.head.text"></p>
+</header>
+
+<section class="timeline" id="days"></section>
+
+<section class="included">
+  <div>
+    <div class="tag" data-t="tour.included.tag"></div>
+    <h2 class="display" data-t="tour.included.title" data-accent></h2>
+  </div>
+  <div class="include-grid" id="includeGrid"></div>
 </section>
 
-<section class="included"><div><div class="section-tag">WHAT'S INCLUDED</div><h2>We've got<br><em>the basics covered.</em></h2></div><div class="include-grid"><div>✓ Transport</div><div>✓ Accommodation</div><div>✓ Daily breakfast</div><div>✓ Tour coordinator</div><div>✓ Entry fees</div><div>✓ Bonfire night</div></div></section>
-<section class="final-cta compact"><h2>Your seat is<br><em>one click away.</em></h2><a href="registration.html" class="btn btn-dark">Register now <span>↗</span></a></section>
-<footer><span>© 2026 DIAMOND TOURS</span><a href="index.html">BACK HOME ↑</a></footer>
-</body></html>
+<section class="block">
+  <div class="final compact">
+    <h2 class="display" data-t="tour.cta.title" data-accent></h2>
+    <a href="registration.html" class="btn btn-accent"><span data-t="tour.cta.button"></span> <span>↗</span></a>
+  </div>
+</section>
+
+<div id="siteFooter"></div>
+<script src="content.js"></script>
+<script src="Script.js"></script>
+</body>
+</html>
